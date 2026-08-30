@@ -1,0 +1,45 @@
+#include <stdio.h>
+
+int main(int argc, char** argv) {
+    FILE *arquivo;                  // ponteiro para representar o arquivo aberto
+    int caractere;                  // vai guardar cada byte lido do arquivo, um de cada vez
+    int qtdCadaByte[256] = {0};     // vetor com 256 posições (uma para cada valor de byte possível: 0 a 255), todas começando zeradas
+
+    // Verifica se o usuário passou exatamente o nome do arquivo como argumento
+    if (argc != 2) {
+        fprintf(stderr, "Erro na chamada do comando. \n");
+        fprintf(stderr, "Uso: %s [ARQUIVO ORIGEM]. \n", argv[0]);
+        return 1;
+    }
+
+    // Tenta abrir o arquivo em modo binário para leitura
+    arquivo = fopen(argv[1], "rb");
+    if (!arquivo) {
+        fprintf(stderr, "Arquivo %s não pode ser aberto para leitura. \n", argv[1]);
+        return 1;
+    }
+
+    // Lê o primeiro caractere antes de entrar no laço
+    caractere = fgetc(arquivo);
+
+    // Repete enquanto ainda houver caracteres para ler (até chegar no fim do arquivo)
+    while (caractere != EOF) {
+        qtdCadaByte[caractere]++;   // usa o valor do caractere lido como índice do vetor e soma 1 na contagem dele
+        caractere = fgetc(arquivo); // lê o próximo caractere do arquivo
+    }
+
+    // Fecha o arquivo, já que terminamos de usá-lo
+    fclose(arquivo);
+
+    fprintf(stdout, "--- Quantidade de cada byte\n");
+
+    // Percorre todas as 256 posições possíveis do vetor
+    for (int i = 0; i < 256; i++) {
+        if (qtdCadaByte[i]) { // só imprime se aquele byte apareceu pelo menos uma vez
+            fprintf(stdout, "%c: %d\t", i, qtdCadaByte[i]); // %c mostra o caractere, %d mostra a quantidade
+        }
+    }
+    fprintf(stdout, "\n");
+
+    return 0;
+}
