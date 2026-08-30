@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+    // Verifica se o nome do arquivo foi passado como argumento
+    if (argc != 2) {
+        fprintf(stderr, "Erro: Use %s <nome_do_arquivo>\n", argv[0]);
+        return 1;
+    }
+
+    // Abre o arquivo para leitura em modo binário ("rb")
+    FILE *arquivo = fopen(argv[1], "rb");
+    if (arquivo == NULL) {
+        fprintf(stderr, "Erro ao abrir o arquivo %s\n", argv[1]);
+        return 1;
+    }
+
+    int caractere;
+    int contador_linhas = 1; // começa em 1: toda linha, mesmo sem \n no final, conta como 1
+
+    // Lê caractere por caractere até o fim do arquivo (EOF)
+    while ((caractere = fgetc(arquivo)) != EOF) {
+        if (caractere == '\n') {
+            contador_linhas++;
+        }
+    }
+
+    // Fecha o arquivo
+    fclose(arquivo);
+
+    // Exibe o resultado na tela
+    printf("O arquivo possui %d linhas.\n", contador_linhas);
+
+    return 0;
+}
